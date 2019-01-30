@@ -210,7 +210,7 @@ var defaultPartitions = partitions{
 	awscnPartition,
 	awsusgovPartition,
 	awsusisoPartition,
-	awsusisobPartition
+	awsusisobPartition,
 }
 
 // AwsPartition returns the Resolver for AWS Standard.
