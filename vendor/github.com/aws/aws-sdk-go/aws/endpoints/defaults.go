@@ -8,11 +8,11 @@ import (
 
 // Partition identifiers
 const (
-	AwsPartitionID       = "aws"        // AWS Standard partition.
-	AwsCnPartitionID     = "aws-cn"     // AWS China partition.
-	AwsUsGovPartitionID  = "aws-us-gov" // AWS GovCloud (US) partition.
-	AwsUsIsoPartitionID  = "aws-iso"    // AWS Isolated (US) partition.
-	AwsUsIsoBPartitionID = "aws-isob"   // AWS Isolated (US) partition.
+	AwsPartitionID      = "aws"           // AWS Standard partition.
+	AwsCnPartitionID    = "aws-cn"        // AWS China partition.
+	AwsUsGovPartitionID = "aws-us-gov"    // AWS GovCloud (US) partition.
+	AwsUsIsoPartitionID   = "aws-us-iso"  // AWS C2S (US) partition.
+	AwsUsIsoBPartitionID  = "aws-us-isob" // AWS SC2S (US) partition.
 )
 
 // AWS Standard partition's regions.
@@ -45,14 +45,14 @@ const (
 	UsGovWest1RegionID = "us-gov-west-1" // AWS GovCloud (US).
 )
 
-// AWS Isolated (US) partition's regions.
+// AWS C2S (US) partition's regions.
 const (
-	UsIso1RegionID = "us-iso-east-1" // AWS Isolated (US).
+	UsIsoEast1RegionID = "us-iso-east-1" // AWS C2S (US).
 )
 
-// AWS Isolated (US) partition's regions.
+// AWS SC2S (US) partition's regions.
 const (
-	UsIsoB1RegionID = "us-isob-east-1" // AWS Isolated (US)
+	UsIsoBEast1RegionID = "us-isob-east-1" // AWS SC2S (US)
 )
 
 // Service identifiers
@@ -3155,18 +3155,18 @@ var awsusgovPartition = partition{
 	},
 }
 
-// AwsUsIsoPartition returns the Resolver for AWS Isolated (US).
+// AwsUsIsoPartition returns the Resolver for AWS C2S (US).
 func AwsUsIsoPartition() Partition {
 	return awsusisoPartition.Partition()
 }
 
 var awsusisoPartition = partition{
-	ID:        "aws-iso",
-	Name:      "AWS Isolated (US)",
+	ID:        "aws-us-iso",
+	Name:      "AWS C2S (US)",
 	DNSSuffix: "c2s.ic.gov",
 	RegionRegex: regionRegex{
 		Regexp: func() *regexp.Regexp {
-			reg, _ := regexp.Compile("^us\\-iso\\-\\e+\\-\\d+$")
+			reg, _ := regexp.Compile("^us\\-iso\\-\\w+\\-\\d+$")
 			return reg
 		}(),
 	},
@@ -3177,7 +3177,7 @@ var awsusisoPartition = partition{
 	},
 	Regions: regions{
 		"us-iso-east-1": region{
-			Description: "AWS Isolated (US)",
+			Description: "AWS C2S (US)",
 		},
 	},
 	Services: services{
@@ -3343,16 +3343,9 @@ var awsusisoPartition = partition{
 			},
 		},
 		"iam": service{
-			PartitionEndpoint: "aws-us-iso-global",
-			IsRegionalized:    boxedFalse,
 
 			Endpoints: endpoints{
-				"aws-us-iso-global": endpoint{
-					Hostname: "iam.c2s.ic.gov",
-					CredentialScope: credentialScope{
-						Region: "us-iso-east-1",
-					},
-				},
+				"us-iso-east-1": endpoint{},
 			},
 		},
 		"kinesis": service{
@@ -3514,18 +3507,18 @@ var awsusisoPartition = partition{
 	},
 }
 
-// AwsUsIsoBPartition returns the Resolver for AWS Isolated (US).
+// AwsUsIsoBPartition returns the Resolver for AWS SC2S (US).
 func AwsUsIsoBPartition() Partition {
 	return awsusisobPartition.Partition()
 }
 
 var awsusisobPartition = partition{
-	ID:        "aws-isob",
-	Name:      "AWS Isolated (US)",
+	ID:        "aws-us-isob",
+	Name:      "AWS SC2S (US)",
 	DNSSuffix: "sc2s.sgov.gov",
 	RegionRegex: regionRegex{
 		Regexp: func() *regexp.Regexp {
-			reg, _ := regexp.Compile("^us\\-isob\\-\\e+\\-\\d+$")
+			reg, _ := regexp.Compile("^us\\-isob\\-\\w+\\-\\d+$")
 			return reg
 		}(),
 	},
@@ -3536,7 +3529,7 @@ var awsusisobPartition = partition{
 	},
 	Regions: regions{
 		"us-isob-east-1": region{
-			Description: "AWS Isolated (US)",
+			Description: "AWS SC2S (US)",
 		},
 	},
 	Services: services{
@@ -3702,16 +3695,9 @@ var awsusisobPartition = partition{
 			},
 		},
 		"iam": service{
-			PartitionEndpoint: "aws-us-iso-global",
-			IsRegionalized:    boxedFalse,
 
 			Endpoints: endpoints{
-				"aws-us-iso-global": endpoint{
-					Hostname: "iam.sc2s.sgov.gov",
-					CredentialScope: credentialScope{
-						Region: "us-isob-east-1",
-					},
-				},
+				"us-isob-east-1": endpoint{},
 			},
 		},
 		"kinesis": service{
