@@ -7,8 +7,8 @@ import { Emitter } from 'app/core/utils/emitter';
 import { contextSrv } from 'app/core/services/context_srv';
 import sortByKeys from 'app/core/utils/sort_by_keys';
 
-import { PanelModel } from './panel_model';
-import { DashboardMigrator } from './dashboard_migration';
+import { PanelModel } from './PanelModel';
+import { DashboardMigrator } from './DashboardMigrator';
 import { TimeRange } from '@grafana/ui/src';
 
 export class DashboardModel {
@@ -271,7 +271,7 @@ export class DashboardModel {
     }
   }
 
-  getPanelById(id) {
+  getPanelById(id): PanelModel {
     for (const panel of this.panels) {
       if (panel.id === id) {
         return panel;
@@ -809,6 +809,10 @@ export class DashboardModel {
 
   isTimezoneUtc() {
     return this.getTimezone() === 'utc';
+  }
+
+  isSnapshot() {
+    return this.snapshot !== undefined;
   }
 
   getTimezone() {

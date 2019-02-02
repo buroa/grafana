@@ -21,11 +21,12 @@ The main highlights are:
 - [Explore]({{< relref "#explore" >}}) - A new query focused workflow for ad-hoc data exploration and troubleshooting.
 - [Grafana Loki]({{< relref "#explore-and-grafana-loki" >}}) - Integration with the new open source log aggregation system from Grafana Labs.
 - [Gauge Panel]({{< relref "#gauge-panel" >}}) - A new standalone panel for gauges.
-- [New Panel Editor UX]({{< relref "#easily-switch-visualization-with-panel-edit-ux-update" >}}) improves panel editing
+- [New Panel Editor UX]({{< relref "#new-panel-editor" >}}) improves panel editing
     and enables easy switching between different visualizations.
 - [Google Stackdriver Datasource]({{< relref "#google-stackdriver-datasource" >}}) is out of beta and is officially released.
 - [Azure Monitor]({{< relref "#azure-monitor-datasource" >}}) plugin is ported from being an external plugin to being a core datasource
 - [React Plugin]({{< relref "#react-panels-query-editors" >}}) support enables an easier way to build plugins.
+- [Named Colors]({{< relref "#named-colors" >}}) in our new improved color picker.
 
 ## Explore
 
@@ -110,6 +111,7 @@ source** plugins can be written in React using our published `@grafana/ui` sdk l
 will be shared closer to or just after release.
 
 {{< docs-imagebox img="/img/docs/v60/react_panels.png" max-width="600px" caption="React Panel" >}}
+<br />
 
 ### Google Stackdriver Datasource
 
@@ -134,11 +136,23 @@ If you are using `Auth proxy` for authentication the session storage will still 
 
 This release will force all users to log in again since their previous token is not valid anymore.
 
+### Named Colors
+
+{{< docs-imagebox img="/img/docs/v60/named_colors.png" max-width="400px" class="docs-image--right" caption="Named Colors" >}}
+
+We have updated the color picker to show named colors and primary colors. We hope this will improve accessibility and
+helps making colors more consistent across dashboards. We hope to do more in this color picker in the future, like show
+colors used in the dashboard.
+
+Named colors also enables Grafana to adapt colors to the current theme.
+
+<div class="clearfix"></div>
+
 ### Other features
 
 - The ElasticSearch datasource now supports [bucket script pipeline aggregations](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-pipeline-bucket-script-aggregation.html). This gives the ability to do per bucket computations like the difference or ratio between two metrics.
-
 - Support for Google Hangouts Chat alert notifications
+- New built in template variables for the current time range in `$__from` and `$__to`
 
 ## Changelog
 

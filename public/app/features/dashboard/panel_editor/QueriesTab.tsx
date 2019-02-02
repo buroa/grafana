@@ -16,8 +16,8 @@ import { BackendSrv, getBackendSrv } from 'app/core/services/backend_srv';
 import config from 'app/core/config';
 
 // Types
-import { PanelModel } from '../panel_model';
-import { DashboardModel } from '../dashboard_model';
+import { PanelModel } from '../state/PanelModel';
+import { DashboardModel } from '../state/DashboardModel';
 import { DataQuery, DataSourceSelectItem } from '@grafana/ui/src/types';
 import { PluginHelp } from 'app/core/components/PluginHelp/PluginHelp';
 
@@ -165,6 +165,11 @@ export class QueriesTab extends PureComponent<Props, State> {
     this.setState({ isAddingMixed: false });
   };
 
+  onQueryChange = (query: DataQuery, index) => {
+    this.props.panel.changeQuery(query, index);
+    this.forceUpdate();
+  };
+
   setScrollTop = (event: React.MouseEvent<HTMLElement>) => {
     const target = event.target as HTMLElement;
     this.setState({ scrollTop: target.scrollTop });
@@ -201,6 +206,7 @@ export class QueriesTab extends PureComponent<Props, State> {
                 key={query.refId}
                 panel={panel}
                 query={query}
+                onChange={query => this.onQueryChange(query, index)}
                 onRemoveQuery={this.onRemoveQuery}
                 onAddQuery={this.onAddQuery}
                 onMoveQuery={this.onMoveQuery}
