@@ -8,9 +8,11 @@ import (
 
 // Partition identifiers
 const (
-	AwsPartitionID      = "aws"        // AWS Standard partition.
-	AwsCnPartitionID    = "aws-cn"     // AWS China partition.
-	AwsUsGovPartitionID = "aws-us-gov" // AWS GovCloud (US) partition.
+	AwsPartitionID        = "aws"         // AWS Standard partition.
+	AwsCnPartitionID      = "aws-cn"      // AWS China partition.
+	AwsUsGovPartitionID   = "aws-us-gov"  // AWS GovCloud (US) partition.
+	AwsUsIsoPartitionID   = "aws-us-iso"  // AWS C2S (US) partition.
+	AwsUsIsoBPartitionID  = "aws-us-isob" // AWS SC2S (US) partition.
 )
 
 // AWS Standard partition's regions.
@@ -45,6 +47,16 @@ const (
 	UsGovWest1RegionID = "us-gov-west-1" // AWS GovCloud (US).
 )
 
+// AWS C2S (US) partition's regions.
+const (
+	UsIsoEast1RegionID = "us-iso-east-1" // AWS C2S (US).
+)
+
+// AWS SC2S (US) partition's regions.
+const (
+	UsIsoBEast1RegionID = "us-isob-east-1" // AWS SC2S (US)
+)
+
 // DefaultResolver returns an Endpoint resolver that will be able
 // to resolve endpoints for: AWS Standard, AWS China, and AWS GovCloud (US).
 //
@@ -68,6 +80,8 @@ var defaultPartitions = partitions{
 	awsPartition,
 	awscnPartition,
 	awsusgovPartition,
+	awsusisoPartition,
+  awsusisobPartition,
 }
 
 // AwsPartition returns the Resolver for AWS Standard.
@@ -3759,6 +3773,711 @@ var awsusgovPartition = partition{
 						Region: "us-gov-west-1",
 					},
 				},
+			},
+		},
+	},
+}
+
+
+// AwsUsIsoPartition returns the Resolver for AWS C2S (US).
+func AwsUsIsoPartition() Partition {
+	return awsusisoPartition.Partition()
+}
+
+var awsusisoPartition = partition{
+	ID:        "aws-us-iso",
+	Name:      "AWS C2S (US)",
+	DNSSuffix: "c2s.ic.gov",
+	RegionRegex: regionRegex{
+		Regexp: func() *regexp.Regexp {
+			reg, _ := regexp.Compile("^us\\-iso\\-\\w+\\-\\d+$")
+			return reg
+		}(),
+	},
+	Defaults: endpoint{
+		Hostname:          "{service}.{region}.{dnsSuffix}",
+		Protocols:         []string{"https"},
+		SignatureVersions: []string{"v4"},
+	},
+	Regions: regions{
+		"us-iso-east-1": region{
+			Description: "AWS C2S (US)",
+		},
+	},
+	Services: services{
+		"acm": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"apigateway": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"autoscaling": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{
+					Protocols: []string{"http", "https"},
+				},
+			},
+		},
+		"cloudformation": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"cloudhsm": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"cloudhsmv2": service{
+			Defaults: endpoint{
+				CredentialScope: credentialScope{
+					Service: "cloudhsm",
+				},
+			},
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"cloudtrail": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"codedeploy": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"config": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"directconnect": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"dms": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"dynamodb": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+				"us-iso-east-1-fips": endpoint{
+					Hostname: "dynamodb.us-iso-east-1.c2s.ic.gov",
+					CredentialScope: credentialScope{
+						Region: "us-iso-east-1",
+					},
+				},
+			},
+		},
+		"ec2": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"ec2metadata": service{
+			PartitionEndpoint: "aws-global",
+			IsRegionalized:    boxedFalse,
+
+			Endpoints: endpoints{
+				"aws-global": endpoint{
+					Hostname:  "169.254.169.254/latest",
+					Protocols: []string{"http"},
+				},
+			},
+		},
+		"ecr": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"ecs": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"elasticache": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"elasticbeanstalk": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"elasticloadbalancing": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{
+					Protocols: []string{"http", "https"},
+				},
+			},
+		},
+		"elasticmapreduce": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{
+					Protocols: []string{"http", "https"},
+				},
+			},
+		},
+		"es": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"events": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"glacier": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{
+					Protocols: []string{"http", "https"},
+				},
+			},
+		},
+		"iam": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"kinesis": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"kms": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"lambda": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"logs": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"metering.marketplace": service{
+			Defaults: endpoint{
+				CredentialScope: credentialScope{
+					Service: "aws-marketplace",
+				},
+			},
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"monitoring": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"polly": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"rds": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"redshift": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"rekognition": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"s3": service{
+			Defaults: endpoint{
+				SignatureVersions: []string{"s3", "s3v4"},
+			},
+			Endpoints: endpoints{
+				"fips-us-iso-east-1": endpoint{
+					Hostname: "s3-fips-us-iso-east-1.c2s.ic.gov",
+					CredentialScope: credentialScope{
+						Region: "us-iso-east-1",
+					},
+				},
+				"us-iso-east-1": endpoint{
+					Hostname:  "s3.us-iso-east-1.c2s.ic.gov",
+					Protocols: []string{"http", "https"},
+				},
+			},
+		},
+		"sms": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"snowball": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"sns": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{
+					Protocols: []string{"http", "https"},
+				},
+			},
+		},
+		"sqs": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{
+					SSLCommonName: "{region}.queue.{dnsSuffix}",
+					Protocols:     []string{"http", "https"},
+				},
+			},
+		},
+		"ssm": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"storagegateway": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"streams.dynamodb": service{
+			Defaults: endpoint{
+				CredentialScope: credentialScope{
+					Service: "dynamodb",
+				},
+			},
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+				"us-iso-east-1-fips": endpoint{
+					Hostname: "dynamodb.us-iso-east-1.c2s.ic.gov",
+					CredentialScope: credentialScope{
+						Region: "us-iso-east-1",
+					},
+				},
+			},
+		},
+		"sts": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"swf": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+		"tagging": service{
+
+			Endpoints: endpoints{
+				"us-iso-east-1": endpoint{},
+			},
+		},
+	},
+}
+
+// AwsUsIsoBPartition returns the Resolver for AWS SC2S (US).
+func AwsUsIsoBPartition() Partition {
+	return awsusisobPartition.Partition()
+}
+
+var awsusisobPartition = partition{
+	ID:        "aws-us-isob",
+	Name:      "AWS SC2S (US)",
+	DNSSuffix: "sc2s.sgov.gov",
+	RegionRegex: regionRegex{
+		Regexp: func() *regexp.Regexp {
+			reg, _ := regexp.Compile("^us\\-isob\\-\\w+\\-\\d+$")
+			return reg
+		}(),
+	},
+	Defaults: endpoint{
+		Hostname:          "{service}.{region}.{dnsSuffix}",
+		Protocols:         []string{"https"},
+		SignatureVersions: []string{"v4"},
+	},
+	Regions: regions{
+		"us-isob-east-1": region{
+			Description: "AWS SC2S (US)",
+		},
+	},
+	Services: services{
+		"acm": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"apigateway": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"autoscaling": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{
+					Protocols: []string{"http", "https"},
+				},
+			},
+		},
+		"cloudformation": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"cloudhsm": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"cloudhsmv2": service{
+			Defaults: endpoint{
+				CredentialScope: credentialScope{
+					Service: "cloudhsm",
+				},
+			},
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"cloudtrail": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"codedeploy": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"config": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"directconnect": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"dms": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"dynamodb": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+				"us-isob-east-1-fips": endpoint{
+					Hostname: "dynamodb.us-isob-east-1.sc2s.sgov.gov",
+					CredentialScope: credentialScope{
+						Region: "us-isob-east-1",
+					},
+				},
+			},
+		},
+		"ec2": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"ec2metadata": service{
+			PartitionEndpoint: "aws-global",
+			IsRegionalized:    boxedFalse,
+
+			Endpoints: endpoints{
+				"aws-global": endpoint{
+					Hostname:  "169.254.169.254/latest",
+					Protocols: []string{"http"},
+				},
+			},
+		},
+		"ecr": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"ecs": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"elasticache": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"elasticbeanstalk": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"elasticloadbalancing": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{
+					Protocols: []string{"http", "https"},
+				},
+			},
+		},
+		"elasticmapreduce": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{
+					Protocols: []string{"http", "https"},
+				},
+			},
+		},
+		"es": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"events": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"glacier": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{
+					Protocols: []string{"http", "https"},
+				},
+			},
+		},
+		"iam": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"kinesis": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"kms": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"lambda": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"logs": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"metering.marketplace": service{
+			Defaults: endpoint{
+				CredentialScope: credentialScope{
+					Service: "aws-marketplace",
+				},
+			},
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"monitoring": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"polly": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"rds": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"redshift": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"rekognition": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"s3": service{
+			Defaults: endpoint{
+				SignatureVersions: []string{"s3", "s3v4"},
+			},
+			Endpoints: endpoints{
+				"fips-us-isob-east-1": endpoint{
+					Hostname: "s3-fips-us-isob-east-1.sc2s.sgov.gov",
+					CredentialScope: credentialScope{
+						Region: "us-isob-east-1",
+					},
+				},
+				"us-isob-east-1": endpoint{
+					Hostname:  "s3.us-isob-east-1.sc2s.sgov.gov",
+					Protocols: []string{"http", "https"},
+				},
+			},
+		},
+		"sms": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"snowball": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"sns": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{
+					Protocols: []string{"http", "https"},
+				},
+			},
+		},
+		"sqs": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{
+					SSLCommonName: "{region}.queue.{dnsSuffix}",
+					Protocols:     []string{"http", "https"},
+				},
+			},
+		},
+		"ssm": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"storagegateway": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"streams.dynamodb": service{
+			Defaults: endpoint{
+				CredentialScope: credentialScope{
+					Service: "dynamodb",
+				},
+			},
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+				"us-isob-east-1-fips": endpoint{
+					Hostname: "dynamodb.us-isob-east-1.sc2s.sgov.gov",
+					CredentialScope: credentialScope{
+						Region: "us-isob-east-1",
+					},
+				},
+			},
+		},
+		"sts": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"swf": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
+			},
+		},
+		"tagging": service{
+
+			Endpoints: endpoints{
+				"us-isob-east-1": endpoint{},
 			},
 		},
 	},
