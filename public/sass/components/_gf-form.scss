@@ -250,6 +250,10 @@ $input-border: 1px solid $input-border-color;
   &--plaintext {
     white-space: unset;
   }
+
+  &--has-help-icon {
+    padding-right: $input-padding-x * 3;
+  }
 }
 
 .gf-form-hint {
@@ -415,7 +419,7 @@ select.gf-form-input ~ .gf-form-help-icon {
   padding: 1.5rem;
   background-color: $empty-list-cta-bg;
   margin-bottom: 2rem;
-  border-top: 3px solid $green;
+  border-top: 3px solid $green-base;
 }
 
 .cta-form__close {
