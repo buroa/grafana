@@ -27,7 +27,7 @@ can configure and setup a new Notification Channel.
 You specify a name and a type, and type specific options. You can also test the notification to make
 sure it's setup correctly.
 
-### Send on all alerts
+### Default (send on all alerts)
 
 When checked, this option will notify for all alert rules - existing and new.
 
@@ -83,7 +83,11 @@ or a bot integration via Slack Apps. Follow Slack's guide to set up a bot integr
 
 Setting | Description
 ---------- | -----------
-Recipient | allows you to override the Slack recipient.
+Url | Slack incoming webhook url.
+Username | Set the username for the bot's message.
+Recipient | Allows you to override the Slack recipient.
+Icon emoji | Provide an emoji to use as the icon for the bot's message. Ex :smile:
+Icon URL | Provide a url to an image to use as the icon for the bot's message.
 Mention | make it possible to include a mention in the Slack notification sent by Grafana. Ex @here or @channel
 Token | If provided, Grafana will upload the generated image via Slack's file.upload API method, not the external image destination.
 

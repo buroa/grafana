@@ -66,10 +66,6 @@
     padding-left: 6px;
   }
 
-  &--search {
-    padding: 1rem 1.5rem 0.75rem 1.5rem;
-  }
-
   .gicon {
     top: -2px;
     position: relative;
@@ -116,12 +112,11 @@
   display: flex;
   align-items: center;
   font-weight: $btn-font-weight;
-  padding: 6px 11px;
+  padding: 6px $space-sm;
   line-height: 16px;
-  height: 30px;
   color: $text-muted;
   border: 1px solid $navbar-button-border;
-  margin-left: 3px;
+  margin-left: $space-xs;
   white-space: nowrap;
 
   .gicon {
@@ -157,14 +152,8 @@
 
 @include media-breakpoint-up(sm) {
   .navbar {
-    padding-left: 60px;
-  }
-
-  .sidemenu-open {
-    .navbar {
-      padding-left: 25px;
-      margin-left: 0;
-    }
+    padding-left: 20px;
+    margin-left: 0;
   }
 
   .navbar-page-btn {

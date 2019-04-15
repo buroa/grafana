@@ -4,12 +4,12 @@ import { getBackendSrv } from 'app/core/services/backend_srv';
 import { getDatasourceSrv } from 'app/features/plugins/datasource_srv';
 import { LayoutMode } from 'app/core/components/LayoutSelector/LayoutSelector';
 import { updateLocation, updateNavIndex, UpdateNavIndexAction } from 'app/core/actions';
-import { UpdateLocationAction } from 'app/core/actions/location';
 import { buildNavModel } from './navModel';
 import { DataSourceSettings } from '@grafana/ui/src/types';
-import { Plugin, StoreState } from 'app/types';
+import { Plugin, StoreState, LocationUpdate } from 'app/types';
 import { actionCreatorFactory } from 'app/core/redux';
 import { ActionOf, noPayloadActionCreatorFactory } from 'app/core/redux/actionCreatorFactory';
+import { getPluginSettings } from 'app/features/plugins/PluginSettingsCache';
 
 export const dataSourceLoaded = actionCreatorFactory<DataSourceSettings>('LOAD_DATA_SOURCE').create();
 
@@ -32,12 +32,12 @@ export const setDataSourceName = actionCreatorFactory<string>('SET_DATA_SOURCE_N
 export const setIsDefault = actionCreatorFactory<boolean>('SET_IS_DEFAULT').create();
 
 export type Action =
-  | UpdateLocationAction
   | UpdateNavIndexAction
   | ActionOf<DataSourceSettings>
   | ActionOf<DataSourceSettings[]>
   | ActionOf<Plugin>
-  | ActionOf<Plugin[]>;
+  | ActionOf<Plugin[]>
+  | ActionOf<LocationUpdate>;
 
 type ThunkResult<R> = ThunkAction<R, StoreState, undefined, Action>;
 
@@ -51,7 +51,7 @@ export function loadDataSources(): ThunkResult<void> {
 export function loadDataSource(id: number): ThunkResult<void> {
   return async dispatch => {
     const dataSource = await getBackendSrv().get(`/api/datasources/${id}`);
-    const pluginInfo = await getBackendSrv().get(`/api/plugins/${dataSource.type}/settings`);
+    const pluginInfo = await getPluginSettings(dataSource.type);
     dispatch(dataSourceLoaded(dataSource));
     dispatch(dataSourceMetaLoaded(pluginInfo));
     dispatch(updateNavIndex(buildNavModel(dataSource, pluginInfo)));
@@ -99,8 +99,8 @@ export function updateDataSource(dataSource: DataSourceSettings): ThunkResult<vo
 export function deleteDataSource(): ThunkResult<void> {
   return async (dispatch, getStore) => {
     const dataSource = getStore().dataSources.dataSource;
-
     await getBackendSrv().delete(`/api/datasources/${dataSource.id}`);
+    await updateFrontendSettings();
     dispatch(updateLocation({ path: '/datasources' }));
   };
 }

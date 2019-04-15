@@ -109,6 +109,7 @@ var (
 	AutoAssignOrgRole       string
 	VerifyEmailEnabled      bool
 	LoginHint               string
+	PasswordHint            string
 	DefaultTheme            string
 	DisableLoginForm        bool
 	DisableSignoutMenu      bool
@@ -140,9 +141,6 @@ var (
 
 	// Basic Auth
 	BasicAuthEnabled bool
-
-	// Plugin settings
-	PluginAppsSkipVerifyTLS bool
 
 	// Session settings.
 	SessionOptions         session.Options
@@ -177,6 +175,10 @@ var (
 	AlertingRenderLimit        int
 	AlertingErrorOrTimeout     string
 	AlertingNoDataOrNullValues string
+
+	AlertingEvaluationTimeout   time.Duration
+	AlertingNotificationTimeout time.Duration
+	AlertingMaxAttempts         int
 
 	// Explore UI
 	ExploreEnabled bool
@@ -228,7 +230,8 @@ type Cfg struct {
 	MetricsEndpointEnabled           bool
 	MetricsEndpointBasicAuthUsername string
 	MetricsEndpointBasicAuthPassword string
-	EnableAlphaPanels                bool
+	PluginsEnableAlpha               bool
+	PluginsAppsSkipVerifyTLS         bool
 	DisableSanitizeHtml              bool
 	EnterpriseLicensePath            string
 
@@ -238,8 +241,13 @@ type Cfg struct {
 	LoginMaxLifetimeDays         int
 	TokenRotationIntervalMinutes int
 
-	// User
-	EditorsCanOwn bool
+	// Dataproxy
+	SendUserHeader bool
+
+	// DistributedCache
+	RemoteCacheOptions *RemoteCacheOptions
+
+	EditorsCanAdmin bool
 }
 
 type CommandLineArgs struct {
@@ -600,6 +608,7 @@ func (cfg *Cfg) Load(args *CommandLineArgs) error {
 	dataproxy := iniFile.Section("dataproxy")
 	DataProxyLogging = dataproxy.Key("logging").MustBool(false)
 	DataProxyTimeout = dataproxy.Key("timeout").MustInt(30)
+	cfg.SendUserHeader = dataproxy.Key("send_user_header").MustBool(false)
 
 	// read security settings
 	security := iniFile.Section("security")
@@ -656,12 +665,13 @@ func (cfg *Cfg) Load(args *CommandLineArgs) error {
 	AutoAssignOrgRole = users.Key("auto_assign_org_role").In("Editor", []string{"Editor", "Admin", "Viewer"})
 	VerifyEmailEnabled = users.Key("verify_email_enabled").MustBool(false)
 	LoginHint = users.Key("login_hint").String()
+	PasswordHint = users.Key("password_hint").String()
 	DefaultTheme = users.Key("default_theme").String()
 	ExternalUserMngLinkUrl = users.Key("external_manage_link_url").String()
 	ExternalUserMngLinkName = users.Key("external_manage_link_name").String()
 	ExternalUserMngInfo = users.Key("external_manage_info").String()
 	ViewersCanEdit = users.Key("viewers_can_edit").MustBool(false)
-	cfg.EditorsCanOwn = users.Key("editors_can_own").MustBool(false)
+	cfg.EditorsCanAdmin = users.Key("editors_can_admin").MustBool(false)
 
 	// auth
 	auth := iniFile.Section("auth")
@@ -709,9 +719,6 @@ func (cfg *Cfg) Load(args *CommandLineArgs) error {
 	authBasic := iniFile.Section("auth.basic")
 	BasicAuthEnabled = authBasic.Key("enabled").MustBool(true)
 
-	// global plugin settings
-	PluginAppsSkipVerifyTLS = iniFile.Section("plugins").Key("app_tls_skip_verify_insecure").MustBool(false)
-
 	// Rendering
 	renderSec := iniFile.Section("rendering")
 	cfg.RendererUrl = renderSec.Key("server_url").String()
@@ -752,12 +759,24 @@ func (cfg *Cfg) Load(args *CommandLineArgs) error {
 	AlertingErrorOrTimeout = alerting.Key("error_or_timeout").MustString("alerting")
 	AlertingNoDataOrNullValues = alerting.Key("nodata_or_nullvalues").MustString("no_data")
 
+	AlertingEvaluationTimeout = alerting.Key("evaluation_timeout_seconds").MustDuration(time.Second * 30)
+	AlertingNotificationTimeout = alerting.Key("notification_timeout_seconds").MustDuration(time.Second * 30)
+	AlertingMaxAttempts = alerting.Key("max_attempts").MustInt(3)
+
 	explore := iniFile.Section("explore")
 	ExploreEnabled = explore.Key("enabled").MustBool(true)
 
-	panels := iniFile.Section("panels")
-	cfg.EnableAlphaPanels = panels.Key("enable_alpha").MustBool(false)
-	cfg.DisableSanitizeHtml = panels.Key("disable_sanitize_html").MustBool(false)
+	panelsSection := iniFile.Section("panels")
+	cfg.DisableSanitizeHtml = panelsSection.Key("disable_sanitize_html").MustBool(false)
+
+	pluginsSection := iniFile.Section("plugins")
+	cfg.PluginsEnableAlpha = pluginsSection.Key("enable_alpha").MustBool(false)
+	cfg.PluginsAppsSkipVerifyTLS = iniFile.Section("plugins").Key("app_tls_skip_verify_insecure").MustBool(false)
+
+	// check old location for this option
+	if panelsSection.Key("enable_alpha").MustBool(false) {
+		cfg.PluginsEnableAlpha = true
+	}
 
 	cfg.readSessionConfig()
 	cfg.readSmtpSettings()
@@ -779,7 +798,18 @@ func (cfg *Cfg) Load(args *CommandLineArgs) error {
 	enterprise := iniFile.Section("enterprise")
 	cfg.EnterpriseLicensePath = enterprise.Key("license_path").MustString(filepath.Join(cfg.DataPath, "license.jwt"))
 
+	cacheServer := iniFile.Section("remote_cache")
+	cfg.RemoteCacheOptions = &RemoteCacheOptions{
+		Name:    cacheServer.Key("type").MustString("database"),
+		ConnStr: cacheServer.Key("connstr").MustString(""),
+	}
+
 	return nil
+}
+
+type RemoteCacheOptions struct {
+	Name    string
+	ConnStr string
 }
 
 func (cfg *Cfg) readSessionConfig() {

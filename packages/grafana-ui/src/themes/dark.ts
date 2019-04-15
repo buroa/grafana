@@ -1,4 +1,3 @@
-import tinycolor from 'tinycolor2';
 import defaultTheme from './default';
 import { GrafanaTheme, GrafanaThemeType } from '../types/theme';
 
@@ -46,6 +45,10 @@ const darkTheme: GrafanaTheme = {
   colors: {
     ...basicColors,
     inputBlack: '#09090b',
+    brandPrimary: basicColors.orange,
+    brandSuccess: basicColors.greenBase,
+    brandWarning: basicColors.orange,
+    brandDanger: basicColors.redBase,
     queryRed: basicColors.redBase,
     queryGreen: '#74e680',
     queryPurple: '#fe85fc',
@@ -56,17 +59,17 @@ const darkTheme: GrafanaTheme = {
     critical: basicColors.redBase,
     bodyBg: basicColors.dark2,
     pageBg: basicColors.dark2,
-    bodyColor: basicColors.gray4,
-    textColor: basicColors.gray4,
-    textColorStrong: basicColors.white,
-    textColorWeak: basicColors.gray2,
-    textColorEmphasis: basicColors.gray5,
-    textColorFaint: basicColors.dark5,
-    linkColor: new tinycolor(basicColors.white).darken(11).toString(),
-    linkColorDisabled: new tinycolor(basicColors.white).darken(11).toString(),
-    linkColorHover: basicColors.white,
-    linkColorExternal: basicColors.blue,
-    headingColor: new tinycolor(basicColors.white).darken(11).toString(),
+    body: basicColors.gray4,
+    text: basicColors.gray4,
+    textStrong: basicColors.white,
+    textWeak: basicColors.gray2,
+    textEmphasis: basicColors.gray5,
+    textFaint: basicColors.dark5,
+    link: basicColors.gray4,
+    linkDisabled: basicColors.gray2,
+    linkHover: basicColors.white,
+    linkExternal: basicColors.blue,
+    headingColor: basicColors.gray4,
   },
   background: {
     dropdown: basicColors.dark3,

@@ -16,7 +16,7 @@ program
   .description('Starts Grafana front-end in development mode with watch enabled')
   .action(async cmd => {
     await execTask(startTask)({
-      watchThemes: cmd.theme,
+      watchThemes: cmd.watchTheme,
       hot: cmd.hot,
     });
   });
@@ -33,10 +33,12 @@ program
   .description('Prepares @grafana/ui release (and publishes to npm on demand)')
   .option('-p, --publish', 'Publish @grafana/ui to npm registry')
   .option('-u, --usePackageJsonVersion', 'Use version specified in package.json')
+  .option('--createVersionCommit', 'Create and push version commit')
   .action(async cmd => {
     await execTask(releaseTask)({
       publishToNpm: !!cmd.publish,
       usePackageJsonVersion: !!cmd.usePackageJsonVersion,
+      createVersionCommit: !!cmd.createVersionCommit,
     });
   });
 

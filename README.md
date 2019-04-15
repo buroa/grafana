@@ -7,12 +7,6 @@
 Grafana is an open source, feature rich metrics dashboard and graph editor for
 Graphite, Elasticsearch, OpenTSDB, Prometheus and InfluxDB.
 
-![](https://www.grafanacon.org/2019/images/grafanacon_la_nav-logo.png)
-
-Join us Feb 25-26 in Los Angeles, California for GrafanaCon - a two-day event with talks focused on Grafana and the surrounding open source monitoring ecosystem. Get deep dives into Loki, the Explore workflow and all of the new features of Grafana 6, plus participate in hands on workshops to help you get the most out of your data.
-
-Time is running out - grab your ticket now! http://grafanacon.org
-
 <!---
 ![](http://docs.grafana.org/assets/img/features/dashboard_ex1.png)
 -->
@@ -119,6 +113,8 @@ The resulting image will be tagged as `grafana/grafana:dev`
 
 Notice: If you are using Docker for MacOS, be sure to set the memory limit to be larger than 2 GiB (at docker -> Preferences -> Advanced), otherwise `grunt build` may fail.
 
+## Development
+
 ### Dev config
 
 Create a custom.ini in the conf directory to override default configuration options.
@@ -154,6 +150,11 @@ GRAFANA_TEST_DB=mysql go test ./pkg/...
 GRAFANA_TEST_DB=postgres go test ./pkg/...
 ```
 
+### Datasource and dashboard provisioning
+
+[Here](https://github.com/grafana/grafana/tree/master/devenv) you can find helpful scripts and docker-compose setup
+that will populate your dev environment for quicker testing end experimenting.
+
 ## Contribute
 
 If you have any ideas for improvement or have found a bug, do not hesitate to open an issue.
@@ -169,5 +170,5 @@ plugin development.
 
 ## License
 
-Grafana is distributed under [Apache 2.0 License](https://github.com/grafana/grafana/blob/master/LICENSE.md).
+Grafana is distributed under [Apache 2.0 License](https://github.com/grafana/grafana/blob/master/LICENSE).
 
